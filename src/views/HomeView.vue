@@ -1,7 +1,11 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+  <div class="h-full mx-auto max-w-4xl flex flex-col">
+    <ul class="p-4 rounded-xl bg-gray-100 flex flex-col gap-2 h-full">
+      <li v-for="item in checklistData" :key="item.id" class="bg-white py-1 px-4 rounded-lg text-left text-gray-800 flex justify-between">
+        <span>{{ item.name }}</span>
+        <span v-if="item.checklistCompletionStatus" class="text-green-700">selesai</span>
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -14,6 +18,11 @@ export default {
   name: 'HomeView',
   components: {
     HelloWorld,
+  },
+  data: function () {
+    return {
+      checklistData: [],
+    }
   },
   created: function () {
     this.getChecklist()
@@ -34,7 +43,13 @@ export default {
         .then((res) => {
           console.log('FETCH RESULT', res)
           console.log('FETCH RESULT DATA', res.data)
-          console.log('FETCH RESULT DATA Checklist', res.data.data, res.data.data.length)
+          console.log(
+            'FETCH RESULT DATA Checklist',
+            res.data.data,
+            res.data.data.length
+          )
+          this.checklistData = res.data.data
+          console.log('Checklist data', this.checklistData)
         })
         .finally(() => {
           console.log('FETCH COMPLETE')
