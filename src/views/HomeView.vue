@@ -1,6 +1,13 @@
 <template>
-  <div class="h-full mx-auto max-w-4xl flex flex-col">
-    <ul class="p-4 rounded-xl bg-gray-100 flex flex-col gap-2 h-full">
+  <div
+    class="p-4 rounded-xl bg-gray-100 h-full mx-auto max-w-4xl flex flex-col gap-8"
+  >
+    <div class="flex gap-4">
+      <input v-model="newCheklistName" type="text" />
+      <button @click="addNewChecklist">tambah</button>
+    </div>
+
+    <ul class="flex flex-col gap-2 h-full">
       <li
         v-for="item in checklistData"
         :key="item.id"
@@ -27,6 +34,7 @@ export default {
   },
   data: function () {
     return {
+      newCheklistName: '',
       checklistData: [],
     }
   },
@@ -59,6 +67,34 @@ export default {
         })
         .finally(() => {
           console.log('FETCH COMPLETE')
+        })
+    },
+    addNewChecklist: function () {
+      console.log('Post New Checklist Start', this.newCheklistName)
+      axios
+        .post(
+          `http://94.74.86.174:8080/api/checklist`,
+          {
+            name: this.newCheklistName,
+          },
+          {
+            headers: {
+              Authorization:
+                'Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlcyI6W119.i2OVQdxr08dmIqwP7cWOJk5Ye4fySFUqofl-w6FKbm4EwXTStfm0u-sGhDvDVUqNG8Cc7STtUJlawVAP057Jlg',
+            },
+          }
+        )
+        .catch((e) => {
+          console.error('FAIL TO POST New Checklists', e)
+        })
+        .then((res) => {
+          console.log('POST New RESULT', res)
+          console.log('POST New RESULT DATA', res.data)
+          this.checklistData.push(res.data.data)
+        })
+        .finally(() => {
+          console.log('POST New COMPLETE')
+          this.newCheklistName = ''
         })
     },
     deleteChecklistItem: function (checklist) {
